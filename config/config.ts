@@ -12,9 +12,8 @@ export default defineConfig({
     hmr: true,
   },
   layout: {
-    name: 'Ant Design Pro',
+    name: 'vert.f',
     locale: true,
-    siderWidth: 208,
   },
   locale: {
     // default zh-CN
@@ -54,6 +53,7 @@ export default defineConfig({
       icon: 'crown',
       access: 'canAdmin',
       component: './Admin',
+      hideInBreadcrumb:true,
       routes: [
         {
           path: '/admin/sub-page',

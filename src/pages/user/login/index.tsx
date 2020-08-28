@@ -4,7 +4,6 @@ import {  SelectLang, useModel } from 'umi';
 import { getPageQuery } from '@/utils/utils';
 // import logo from '@/assets/logo.svg';
 import { LoginParamsType, accountLogin } from '@/services/login';
-import Footer from '@/components/Footer';
 import LoginFrom from './components/Login';
 import styles from './style.less';
 
@@ -98,6 +97,7 @@ const Login: React.FC<{}> = () => {
               )}
 
               <Username
+                style={{'margin':'0 0 6px 0'}}
                 name="username"
                 placeholder="用户名: admin"
                 rules={[
@@ -108,6 +108,7 @@ const Login: React.FC<{}> = () => {
                 ]}
               />
               <Password
+                style={{'margin':'0 0 6px 0'}}
                 name="password"
                 placeholder="密码: admin"
                 rules={[
@@ -118,11 +119,10 @@ const Login: React.FC<{}> = () => {
                 ]}
               />
             </div>
-            <Submit loading={submitting}>登录</Submit>
+            <Submit loading={submitting} style={{'margin':'0 auto'}}>登录</Submit>
           </LoginFrom>
         </div>
       </div>
-      <Footer />
     </div>
   );
 };

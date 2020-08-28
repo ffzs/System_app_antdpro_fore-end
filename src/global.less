@@ -1,5 +1,42 @@
 @import '~antd/es/style/themes/default.less';
 
+
+@my-theme-header-color: #4258b5;
+
+.ant-layout-header,
+.ant-menu.ant-menu-dark,
+.ant-pro-sider-logo,
+.ant-menu-dark.ant-menu-sub,
+.ant-menu.ant-menu-dark.ant-menu-sub{
+  background: @my-theme-header-color;
+}
+
+.ant-pro-global-header-layout-mix {
+  background: #232850;
+}
+
+.ant-menu-dark .ant-menu-inline.ant-menu-sub{
+  background: #4258b5;
+}
+
+
+.ant-input-affix-wrapper,
+.ant-input-affix-wrapper-lg {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(0,0,0,0.3);
+  border-radius: 4px;
+  box-shadow: inset 0 -5px 45px rgba(100,100,100,0.2), 0 1px 1px rgba(255,255,255,0.2);
+}
+
+.ant-input,
+.ant-input-lg{
+  color: #bee7ff;
+  background: rgba(40,41,56,0.4);
+}
+
+.ant-input:focus { box-shadow: inset 0 -5px 45px rgba(100,100,100,0.4), 0 1px 1px rgba(255,255,255,0.2); }
+
+
 html,
 body,
 #root {

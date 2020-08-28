@@ -1,5 +1,8 @@
 @import '~antd/es/style/themes/default.less';
 
+@my-theme-header-color: #4258b5;
+@my-background-color: -webkit-radial-gradient(0% 100%, ellipse cover, rgba(109, 103, 111, 0.4) 10%,rgba(138,114,76,0) 40%), linear-gradient(to bottom,  rgba(57,173,219,.25) 0%,rgba(42,60,87,.4) 100%), linear-gradient(135deg,  #670d10 0%,#092756 100%);
+
 .container {
   display: flex;
   flex-direction: column;
@@ -23,12 +26,12 @@
   flex: 1;
   padding: 32px 0;
 }
-
 @media (min-width: @screen-md-min) {
   .container {
-    background-image: url('https://gw.alipayobjects.com/zos/rmsportal/TVYTbAXWheQpRcWDaDMu.svg');
-    background-repeat: no-repeat;
-    background-position: center 110px;
+    //background-image: url('https://gw.alipayobjects.com/zos/rmsportal/TVYTbAXWheQpRcWDaDMu.svg');
+    background: @my-background-color;
+    //background-repeat: no-repeat;
+    //background-position: center 110px;
     background-size: 100%;
   }
 
@@ -50,13 +53,13 @@
 }
 
 .blank {
-  height: 150px;
+  height: 130px;
 }
 
 .logo {
   float: none;
-  width: 90%;
-  padding-bottom: 13px;
+  width: 75%;
+  padding-bottom: 23px;
 }
 
 .title {
@@ -78,9 +81,9 @@
 .main {
   width: 368px;
   margin: 0 auto;
-  text-align: center;
-  background: #2928a6;
   padding: 30px 20px 20px 20px;
+  text-align: center;
+  //background: @my-theme-header-color;
   border-radius: 13px;
   @media screen and (max-width: @screen-sm) {
     width: 95%;
@@ -116,3 +119,4 @@
     }
   }
 }
+

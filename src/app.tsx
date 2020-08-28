@@ -1,5 +1,5 @@
 import React from 'react';
-import { BasicLayoutProps, Settings as LayoutSettings } from '@ant-design/pro-layout';
+import {BasicLayoutProps, Settings as LayoutSettings} from '@ant-design/pro-layout';
 import { notification } from 'antd';
 import { history, RequestConfig } from 'umi';
 import RightContent from '@/components/RightContent';
@@ -37,7 +37,12 @@ export const layout = ({
   return {
     rightContentRender: () => <RightContent />,
     disableContentMargin: false,
-    footerRender: () => <Footer />,
+    footerRender: () => {
+      if (history.location.pathname === '/user/login') {
+        return <footer />
+      }
+      return <Footer />
+    },
     onPageChange: () => {
       // 如果没有登录，重定向到 login
       if (!initialState?.currentUser?.userid && history.location.pathname !== '/user/login') {

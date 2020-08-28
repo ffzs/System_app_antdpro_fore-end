@@ -1,18 +1,20 @@
 import { Settings as LayoutSettings } from '@ant-design/pro-layout';
 
 export default {
-  navTheme: 'light',
+  navTheme: 'dark',
   // 拂晓蓝
   primaryColor: '#1890ff',
-  layout: 'mix',
+  layout: 'top',
   contentWidth: 'Fluid',
+  logo:'/logo.png',
+  siderWidth: 208,
   fixedHeader: false,
-  fixSiderbar: false,
+  fixSiderbar: true,
   colorWeak: false,
   menu: {
     locale: true,
   },
-  title: 'vert.f',
+  title: 'vart.f',
   pwa: false,
   iconfontUrl: '',
 } as LayoutSettings & {
