@@ -1,48 +1,36 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Card, Alert, Typography } from 'antd';
-import styles from './Welcome.less';
+import { Typography, List, Button} from 'antd';
+import {findAll} from "@/services/user";
+// import styles from './Welcome.less';
+import {UserDetails} from "@/pages/user/table/data";
 
-const CodePreview: React.FC<{}> = ({ children }) => (
-  <pre className={styles.pre}>
-    <code>
-      <Typography.Text copyable>{children}</Typography.Text>
-    </code>
-  </pre>
-);
 
-export default (): React.ReactNode => (
-  <PageContainer title={false}>
-    <Card>
-      <Alert
-        message="更快更强的重型组件，已经发布。"
-        type="success"
-        showIcon
-        banner
-        style={{
-          margin: -12,
-          marginBottom: 24,
-        }}
+const Welcome:React.FC<{}> = () => {
+  const [users, setUsers] = useState<Array<string>>([]);
+
+  const clink = async () => {
+    const {data} = await findAll();
+    const userList:Array<UserDetails> = data;
+    const info:Array<string> = userList.map((v:UserDetails) => JSON.stringify(v));;
+    setUsers(info);
+  };
+
+  return (
+    <PageContainer title={false}>
+      <List
+        bordered
+        dataSource={users}
+        renderItem={item => (
+          <List.Item>
+            <Typography.Text mark>[ITEM]</Typography.Text> {item}
+          </List.Item>
+        )}
       />
-      <Typography.Text strong>
-        高级表格{' '}
-        <a href="https://protable.ant.design/" rel="noopener noreferrer" target="__blank">
-          欢迎使用
-        </a>
-      </Typography.Text>
-      <CodePreview>yarn add @ant-design/pro-table</CodePreview>
-      <Typography.Text
-        strong
-        style={{
-          marginBottom: 12,
-        }}
-      >
-        高级布局{' '}
-        <a href="https://prolayout.ant.design/" rel="noopener noreferrer" target="__blank">
-          欢迎使用
-        </a>
-      </Typography.Text>
-      <CodePreview>yarn add @ant-design/pro-layout</CodePreview>
-    </Card>
-  </PageContainer>
-);
+      <Button onClick={clink} type="primary" >data</Button>
+    </PageContainer>
+  );
+};
+
+
+export default Welcome;

@@ -18,7 +18,7 @@ export async function fakeAccountLogin(params: LoginParamsType) {
 export async function accountLogin(data:LoginParamsType) {
 
   return request('http://localhost:8080/api/auth/login', {
-    method: 'POST',
+    method: 'post',
     data,
   }).then((response) => {
     return response;
@@ -33,7 +33,7 @@ export async function getFakeCaptcha(mobile: string) {
 
 export async function outLogin(token: string) {
   return request('http://localhost:8080/api/auth/logout', {
-    method: 'GET',
+    method: 'get',
     params: {token},
   }).then((response) => {
     return response;

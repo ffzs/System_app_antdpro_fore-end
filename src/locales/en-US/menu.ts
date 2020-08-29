@@ -3,7 +3,7 @@ export default {
   'menu.more-blocks': 'More Blocks',
   'menu.home': 'Home',
   'menu.admin': 'Admin',
-  'menu.admin.sub-page': 'Sub-Page',
+  'menu.admin.user-page': 'User-Page',
   'menu.login': 'Login',
   'menu.register': 'Register',
   'menu.register.result': 'Register Result',

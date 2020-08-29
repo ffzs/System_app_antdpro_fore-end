@@ -6,6 +6,7 @@ import { getPageQuery } from '@/utils/utils';
 import { LoginParamsType, accountLogin } from '@/services/login';
 import LoginFrom from './components/Login';
 import styles from './style.less';
+import {findAll} from "@/services/user";
 
 const { Username, Password, Submit } = LoginFrom;
 
@@ -48,17 +49,17 @@ const Login: React.FC<{}> = () => {
   const [userLoginState, setUserLoginState] = useState<API.LoginStateType>({});
   const [submitting, setSubmitting] = useState(false);
 
-  const { refresh} = useModel('@@initialState');
+  const { refresh } = useModel('@@initialState');
 
   const handleSubmit = async (values: LoginParamsType) => {
     setSubmitting(true);
     try {
       // 登录
       const msg = await accountLogin({ ...values,  type: 'account'});
+      const data = await findAll();
 
       if (msg.status === 200) {
         message.success('登录成功！');
-
         localStorage.setItem("token", msg.data.token);
         localStorage.setItem("user", JSON.stringify(msg.data));
 

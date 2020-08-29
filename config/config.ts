@@ -52,22 +52,15 @@ export default defineConfig({
       name: 'admin',
       icon: 'crown',
       access: 'canAdmin',
-      component: './Admin',
       hideInBreadcrumb:true,
       routes: [
         {
-          path: '/admin/sub-page',
-          name: 'sub-page',
+          path: '/admin/user-page',
+          name: 'user-page',
           icon: 'smile',
-          component: './Welcome',
+          component: './user/table',
         },
       ],
-    },
-    {
-      name: 'list.table-list',
-      icon: 'table',
-      path: '/list',
-      component: './ListTableList',
     },
     {
       path: '/',
