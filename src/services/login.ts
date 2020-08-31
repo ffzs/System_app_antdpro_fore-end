@@ -10,19 +10,20 @@ export interface LoginParamsType {
 
 export async function fakeAccountLogin(params: LoginParamsType) {
   return request<API.LoginStateType>('/api/login/account', {
-    method: 'POST',
+    method: 'post',
     data: params,
   });
 }
 
 export async function accountLogin(data:LoginParamsType) {
-
+  // window.alert(JSON.stringify(data));
   return request('http://localhost:8080/api/auth/login', {
     method: 'post',
     data,
   }).then((response) => {
     return response;
   }).catch((error) => {
+    window.alert(JSON.stringify(error));
     console.log(error);
   });
 }

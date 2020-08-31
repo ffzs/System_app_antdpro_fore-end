@@ -2,11 +2,9 @@ import { Alert, message } from 'antd';
 import React, { useState } from 'react';
 import {  SelectLang, useModel } from 'umi';
 import { getPageQuery } from '@/utils/utils';
-// import logo from '@/assets/logo.svg';
 import { LoginParamsType, accountLogin } from '@/services/login';
 import LoginFrom from './components/Login';
 import styles from './style.less';
-import {findAll} from "@/services/user";
 
 const { Username, Password, Submit } = LoginFrom;
 
@@ -56,7 +54,6 @@ const Login: React.FC<{}> = () => {
     try {
       // 登录
       const msg = await accountLogin({ ...values,  type: 'account'});
-      const data = await findAll();
 
       if (msg.status === 200) {
         message.success('登录成功！');
@@ -100,7 +97,7 @@ const Login: React.FC<{}> = () => {
               <Username
                 style={{'margin':'0 0 6px 0'}}
                 name="username"
-                placeholder="用户名: admin"
+                placeholder="用户名: admin|ffzs|dz|vincent"
                 rules={[
                   {
                     required: true,
@@ -111,7 +108,7 @@ const Login: React.FC<{}> = () => {
               <Password
                 style={{'margin':'0 0 6px 0'}}
                 name="password"
-                placeholder="密码: admin"
+                placeholder="密码: 123zxc"
                 rules={[
                   {
                     required: true,

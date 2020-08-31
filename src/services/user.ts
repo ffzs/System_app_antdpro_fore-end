@@ -1,103 +1,113 @@
-import { request } from 'umi';
+import {request} from 'umi';
 import {UserDetails} from "@/pages/user/table/data";
 
 export async function query() {
   return request<API.CurrentUser[]>('/api/users');
 }
 
+export const getToken = () => {
+  return `Bearer ${localStorage.getItem('token')}`;
+};
 
 export async function findAll() {
-  const token = `Bearer ${localStorage.getItem('token')}`;
   return request('http://localhost:8080/api/user/all', {
     method: 'get',
     headers:{
       Accept: 'application/json',
-      'Authorization': token,
+      'Authorization': getToken(),
     }
   })
-    .then((response) => {
-      const data = response.data.map((v:UserDetails) => {
-        return {...v, key:v.id};
-      });
-      return {data};
-    }).catch((error) => {
-      console.log(error);
+  .then((response) => {
+    const data = response.data.map((v:UserDetails) => {
+      return {...v, key:v.id};
     });
+    return {data};
+  })
 }
 
 export async function findByName(username: string) {
-  const token = `Bearer ${localStorage.getItem('token')}`;
   return request('http://localhost:8080/api/user', {
     method: 'get',
     headers:{
       Accept: 'application/json',
-      'Authorization': token,
+      'Authorization': getToken(),
     },
     params: {username},
   })
-    .then((response) => {
-      return response;
-    }).catch((error) => {
-      console.log(error);
-    });
 }
 
 
 export async function saveUser(user: UserDetails) {
-  const token = `Bearer ${localStorage.getItem('token')}`;
   return request('http://localhost:8080/api/user', {
     method: 'post',
     headers:{
       Accept: 'application/json',
-      'Authorization': token,
+      'Authorization': getToken(),
     },
     data: user,
   })
-    .then((response) => {
-      return response;
-    }).catch((error) => {
-      console.log(error);
-    });
 }
 
 export async function updateUser(data: UserDetails) {
-  const token = `Bearer ${localStorage.getItem('token')}`;
   return request('http://localhost:8080/api/user', {
     method: 'post',
     headers:{
       Accept: 'application/json',
-      'Authorization': token,
+      'Authorization': getToken(),
     },
     data,
   })
-    .then((response) => {
-      return response;
-    }).catch((error) => {
-      console.log(error);
-    });
 }
 
 export async function deleteUserById(id: number) {
-  const token = `Bearer ${localStorage.getItem('token')}`;
   return request('http://localhost:8080/api/user', {
     method: 'delete',
     headers:{
       Accept: 'application/json',
-      'Authorization': token,
+      'Authorization': getToken(),
     },
     params: {id},
   })
-    .then((response) => {
-      return response;
-    }).catch((error) => {
-      console.log(error);
-    });
 }
 
 
-export async function queryCurrent() {
-  return request<API.CurrentUser>('/api/currentUser');
+
+export async function uploadExcel(excel:any) {
+  return request('http://localhost:8080/api/user', {
+    method: 'post',
+    headers:{
+      'Authorization': getToken(),
+    },
+    body: excel,
+  })
 }
+
+export async function downloadExcel(filename:string) {
+  return request('http://localhost:8080/api/io/download/excel/db', {
+    method: 'post',
+    headers:{
+      'Authorization': getToken(),
+    },
+    responseType: 'arrayBuffer',
+  })
+  .then(res => {
+    const blob = new Blob([res], {type: "application/vnd.ms-excel"});
+    download(blob, filename);
+  })
+}
+
+
+export function download(blobData: Blob, forDownLoadFileName: string ): any {
+  const elink = document.createElement('a');
+  elink.download = forDownLoadFileName;
+  elink.style.display = 'none';
+  elink.href = URL.createObjectURL(blobData);
+  document.body.appendChild(elink);
+  elink.click();
+  URL.revokeObjectURL(elink.href); // 释放URL 对象
+  document.body.removeChild(elink);
+}
+
 
 export async function queryNotices(): Promise<any> {
   return request<{ data: API.NoticeIconData[] }>('/api/notices');

@@ -51,7 +51,7 @@ export default defineConfig({
       path: '/admin',
       name: 'admin',
       icon: 'crown',
-      access: 'canAdmin',
+      access: 'canRead',
       hideInBreadcrumb:true,
       routes: [
         {
@@ -62,6 +62,13 @@ export default defineConfig({
         },
       ],
     },
+    {
+      path: '/upload',
+      name: 'upload',
+      icon: 'smile',
+      component: './upload',
+    },
+
     {
       path: '/',
       redirect: '/welcome',

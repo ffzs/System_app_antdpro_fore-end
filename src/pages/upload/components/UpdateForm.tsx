@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Button, Input, Modal} from 'antd';
 
-import { UserDetails} from '../data.d';
+import { UserDetails} from '../data';
 import {useAccess} from "@@/plugin-access/access";
 
 export interface FormValueType extends Partial<UserDetails> {

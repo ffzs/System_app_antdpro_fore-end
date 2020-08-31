@@ -5,6 +5,7 @@ export default {
   'menu.admin': 'Admin',
   'menu.admin.user-page': 'User-Page',
   'menu.login': 'Login',
+  'menu.upload': 'Upload',
   'menu.register': 'Register',
   'menu.register.result': 'Register Result',
   'menu.dashboard': 'Dashboard',

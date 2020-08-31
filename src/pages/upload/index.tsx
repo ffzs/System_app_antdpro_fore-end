@@ -1,14 +1,17 @@
-import { PlusOutlined,UploadOutlined, CloudDownloadOutlined } from '@ant-design/icons';
-import { Button, message, Tag, Upload } from 'antd';
+import {InboxOutlined } from '@ant-design/icons';
+import { Button, message, Tag, Upload, } from 'antd';
 import React, {useState, useRef} from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 
-import {deleteUserById, downloadExcel, findAll, getToken, saveUser, updateUser} from "@/services/user";
+import {deleteUserById, getToken, saveUser, updateUser} from "@/services/user";
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
-import {UserDetails} from './data.d';
+import {UserDetails} from './data';
 import {useAccess} from "@@/plugin-access/access";
+
+
+const { Dragger } = Upload;
 
 /**
  * 添加节点
@@ -71,27 +74,11 @@ const handleRemove = async (selectedRows: UserDetails[]) => {
   }
 };
 
-
-const handleDownload = async () => {
-  const hide = message.loading('正在下载');
-  const filename = `test-${(new Date()).toLocaleDateString()}.xlsx`;
-  try {
-    await downloadExcel(filename);
-    hide();
-    message.success('下载成功，即将刷新');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('下载失败，请重试');
-    return false;
-  }
-};
-
-
 const TableList: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [stepFormValues, setStepFormValues] = useState({});
+  const [userData, setUserData] = useState([]);
   const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<UserDetails[]>([]);
   const access = useAccess();
@@ -125,8 +112,8 @@ const TableList: React.FC<{}> = () => {
       renderText: (roles: Array<string>) => (
         <>
           {
-            roles.map((role,index)=>(
-              <Tag color="green" key={index}>
+            roles.map(role=>(
+              <Tag color="green">
                 {role}
               </Tag>
             ))
@@ -168,46 +155,27 @@ const TableList: React.FC<{}> = () => {
       hideInForm: true,
     },
   ];
-  const updateColumns: ProColumns<UserDetails>[] = [
-    {
-      title: '操作',
-      dataIndex: 'option',
-      valueType: 'option',
-      render: (_, record) => (
-        <>
-          <a
-            onClick={() => {
-              handleUpdateModalVisible(true);
-              setStepFormValues(record);
-            }}
-          >
-            修改
-          </a>
-        </>
-      ),
-    },
-  ];
   if (access.canAdmin) {
-    columns.push(...adminColumns, ...updateColumns);
-  }
-  else if (access.canUpload) {
-    columns.push(...updateColumns);
+    columns.push(...adminColumns);
   }
 
 
   // upload props
 
   const uploadProps = {
-    name: 'test-file',
+    name: 'file',
     action: 'http://localhost:8080/api/io/upload/excel',
     headers: {
       authorization: getToken(),
     },
+    showUploadList: false,
     onChange(info:any) {
       if (info.file.status !== 'uploading') {
-        console.log(info.file, info.fileList);
+        // console.log(info.file, info.fileList);
       }
       if (info.file.status === 'done') {
+        setUserData(info.file.response);
+        // console.log(info.file.response);
         message.success(`${info.file.name} file uploaded successfully`);
       } else if (info.file.status === 'error') {
         message.error(`${info.file.name} file upload failed.`);
@@ -218,60 +186,18 @@ const TableList: React.FC<{}> = () => {
 
   return (
     <PageContainer title={false}>
+      <Dragger {...uploadProps}>
+        <p className="ant-upload-drag-icon">
+          <InboxOutlined />
+        </p>
+        <p className="ant-upload-text">点击或者拖拽文件进行上传</p>
+      </Dragger>
       <ProTable<UserDetails>
         headerTitle="查询表格"
         actionRef={actionRef}
         rowKey="key"
         search={false}
-        // search={{
-        //   collapsed: true,
-        //   optionRender: ({ searchText, resetText }, { form }) => {
-        //     return [
-        //       <a
-        //         key="searchText"
-        //         onClick={() => {
-        //           form?.submit();
-        //         }}
-        //       >
-        //         {searchText}
-        //       </a>,
-        //       <a
-        //         key="resetText"
-        //         onClick={() => {
-        //           form?.resetFields();
-        //         }}
-        //       >
-        //         {resetText}
-        //       </a>,
-        //       <a
-        //         key="out"
-        //         target="_blank"
-        //         onClick={()=>handleDownload()}
-        //       >
-        //         导出
-        //       </a>,
-        //     ];
-        //   },
-        // }}
-        toolBarRender={() => [access.canAdmin &&
-          (<Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建
-          </Button>),
-          access.canAdmin && (
-            <Button type="primary" onClick={() => handleDownload()}>
-              <CloudDownloadOutlined/> 下载
-            </Button>
-          ),
-          access.canAdmin && (
-            <Upload {...uploadProps}
-            >
-              <Button>
-                <UploadOutlined /> 上传
-              </Button>
-            </Upload>
-          ),
-        ]}
-        request={()=>findAll()}
+        dataSource={userData}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
@@ -285,7 +211,7 @@ const TableList: React.FC<{}> = () => {
             </div>
           }
         >
-          {access.canAdmin&&(<Button
+          <Button
             onClick={async () => {
               await handleRemove(selectedRowsState);
               setSelectedRows([]);
@@ -294,7 +220,7 @@ const TableList: React.FC<{}> = () => {
             }}
           >
             批量删除
-          </Button>)}
+          </Button>
           <Button type="primary">批量审批</Button>
         </FooterToolbar>
       )}

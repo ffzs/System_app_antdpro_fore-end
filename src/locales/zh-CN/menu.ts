@@ -5,6 +5,7 @@ export default {
   'menu.admin': '管理',
   'menu.admin.user-page': '用户管理',
   'menu.login': '登录',
+  'menu.upload': '上传测试',
   'menu.register': '注册',
   'menu.register.result': '注册结果',
   'menu.dashboard': 'Dashboard',
