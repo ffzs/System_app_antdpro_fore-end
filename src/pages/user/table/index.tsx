@@ -257,9 +257,9 @@ const TableList: React.FC<{}> = () => {
         //   },
         // }}
         toolBarRender={() => [access.canAdmin &&
-          (<Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建
-          </Button>),
+        (<Button type="primary" onClick={() => handleModalVisible(true)}>
+          <PlusOutlined /> 新建
+        </Button>),
           access.canRead && (
             <Button type="primary" onClick={() => handleDownload()}>
               <CloudDownloadOutlined/> 下载

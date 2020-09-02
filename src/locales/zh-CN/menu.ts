@@ -7,6 +7,7 @@ export default {
   'menu.admin.api-page': '接口管理',
   'menu.admin.upload': '文件上传',
   'menu.login': '登录',
+  'menu.test': '测试',
   'menu.register': '注册',
   'menu.register.result': '注册结果',
   'menu.dashboard': 'Dashboard',

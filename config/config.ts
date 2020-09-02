@@ -75,6 +75,12 @@ export default defineConfig({
       component: './Welcome',
     },
     {
+      path: '/test',
+      name: 'test',
+      icon: 'smile',
+      component: './stream/tmp',
+    },
+    {
       path: '/',
       redirect: '/welcome',
     },

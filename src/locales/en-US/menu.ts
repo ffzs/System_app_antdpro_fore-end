@@ -7,6 +7,7 @@ export default {
   'menu.admin.api-page': 'Api Table',
   'menu.admin.upload': 'Upload Files',
   'menu.login': 'Login',
+  'menu.test': 'Test Page',
   'menu.register': 'Register',
   'menu.register.result': 'Register Result',
   'menu.dashboard': 'Dashboard',
