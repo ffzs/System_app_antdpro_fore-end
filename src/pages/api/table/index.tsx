@@ -1,26 +1,26 @@
 import { PlusOutlined,UploadOutlined, CloudDownloadOutlined } from '@ant-design/icons';
-import { Button, message, Tag, Upload } from 'antd';
+import { Button, message, Tag, Upload ,Radio} from 'antd';
 import React, {useState, useRef} from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 
-import {deleteUserById, downloadExcel, findAll, getToken, saveUser, updateUser} from "@/services/user";
+import {getToken} from "@/services/user";
+import {deleteApi, findAllApi, saveApi, downloadApiExcel, updateApi} from "@/pages/api/table/apiServeice";
+import {useAccess} from "@@/plugin-access/access";
 import CreateForm from './components/CreateForm';
 import UpdateForm, {FormValueType} from './components/UpdateForm';
-import {UserDetails} from './data.d';
-import {useAccess} from "@@/plugin-access/access";
+import {ApiTableItem} from './data.d';
 
 /**
  * 添加节点
  * @param fields
  */
 
-const handleAdd = async (fields: UserDetails) => {
+const handleAdd = async (fields: ApiTableItem) => {
   const hide = message.loading('正在添加');
   try {
-    const defaultUser = {avatar:"http://img.jj20.com/up/allimg/tx26/180814175446490.jpg", password: '123zxc', roles: ['ROLE_USER']};
-    const roles:Array<string> = fields.roles.toString().split(',');
-    await saveUser({...defaultUser, ...fields, roles});
+    const roles:Array<string> = fields.roles.toString().split(',').map(value => value.trim());
+    await saveApi({...fields, roles});
     hide();
     message.success('添加成功');
     return true;
@@ -37,11 +37,30 @@ const handleAdd = async (fields: UserDetails) => {
  */
 const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading('正在配置');
-  const {id, avatar, password, roles, frozen, mobile, email, username} = fields;
   // const role = typeof roles === "string"? [roles]:roles;
   try {
     // @ts-ignore
-    await updateUser({id, avatar, password, roles, frozen, mobile, email, username});
+    await updateApi({...fields});
+    hide();
+
+    message.success('配置成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('配置失败请重试！');
+    return false;
+  }
+};
+
+
+const handleUpdateMany = async (selectedRows: ApiTableItem[]) => {
+  const hide = message.loading('正在配置');
+  // const role = typeof roles === "string"? [roles]:roles;
+  try {
+    // @ts-ignore
+    selectedRows.forEach(async (row) => {
+      await updateApi(row);
+    });
     hide();
 
     message.success('配置成功');
@@ -57,12 +76,12 @@ const handleUpdate = async (fields: FormValueType) => {
  *  删除节点
  * @param selectedRows
  */
-const handleRemove = async (selectedRows: UserDetails[]) => {
+const handleRemove = async (selectedRows: ApiTableItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    selectedRows.forEach(async (row) => {
-        await deleteUserById(row.id);
+    selectedRows.forEach((row) => {
+      deleteApi(row.id);
     });
     hide();
     message.success('删除成功，即将刷新');
@@ -79,7 +98,7 @@ const handleDownload = async () => {
   const hide = message.loading('正在下载');
   const filename = `test-${(new Date()).toLocaleDateString()}.xlsx`;
   try {
-    await downloadExcel(filename);
+    await downloadApiExcel(filename);
     hide();
     message.success('下载成功，即将刷新');
     return true;
@@ -91,37 +110,47 @@ const handleDownload = async () => {
 };
 
 
-const TableList: React.FC<{}> = () => {
+const ApiTableList: React.FC<{}> = () => {
+
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [stepFormValues, setStepFormValues] = useState({});
   const actionRef = useRef<ActionType>();
-  const [selectedRowsState, setSelectedRows] = useState<UserDetails[]>([]);
+  const [selectedRowsState, setSelectedRows] = useState<ApiTableItem[]>([]);
+  const [radioValue, setRadioValue] = useState('read');
+  const [apiData, setApiData] = useState<ApiTableItem[]>([]);
   const access = useAccess();
 
+  const getApiData = () => {
+    return new Promise(function(resolve) {
+      const data = apiData.map((value,index) => {return {...value, key:index+1}})
+      resolve({data});
+    });
+  };
   // @ts-ignore
-  const columns: ProColumns<UserDetails>[] = [
+  const columns: ProColumns<ApiTableItem>[] = [
     {
-      title: '头像',
-      dataIndex: 'avatar',
-      hideInForm: true,
-      valueType: 'avatar',
-    },
-    {
-      title: '用户名',
-      dataIndex: 'username',
-    },
-    {
-      title: '邮箱',
-      dataIndex: 'email',
+      title: '地址',
+      dataIndex: 'url',
+      // hideInForm: true,
       valueType: 'textarea',
     },
     {
-      title: '手机号',
-      dataIndex: 'mobile',
+      title: '接口名称',
+      dataIndex: 'name',
+    },
+    {
+      title: '访问模式',
+      dataIndex: 'remark',
+      valueEnum: {
+        'get': { text: 'GET', status: 'Success' },
+        'post': { text: 'POST', status: 'Warning' },
+        'delete': { text: 'DELETE', status: 'Error' },
+        'put': { text: 'PUT', status: 'Processing' },
+      },
     },
   ];
-  const adminColumns: ProColumns<UserDetails>[] = [
+  const adminColumns: ProColumns<ApiTableItem>[] = [
     {
       title: '权限',
       dataIndex: 'roles',
@@ -129,22 +158,13 @@ const TableList: React.FC<{}> = () => {
         <>
           {
             roles.map((role,index)=>(
-              <Tag color="green" key={index}>
+              <Tag color="green" key={index+1}>
                 {role}
               </Tag>
             ))
           }
         </>
       ),
-    },
-    {
-      title: '是否停用',
-      dataIndex: 'frozen',
-      hideInForm: true,
-      valueEnum: {
-        0: { text: '正常', status: 'Success' },
-        1: { text: '停用', status: 'Error' },
-      },
     },
     {
       title: '创建人',
@@ -171,7 +191,7 @@ const TableList: React.FC<{}> = () => {
       hideInForm: true,
     },
   ];
-  const updateColumns: ProColumns<UserDetails>[] = [
+  const updateColumns: ProColumns<ApiTableItem>[] = [
     {
       title: '操作',
       dataIndex: 'option',
@@ -201,16 +221,20 @@ const TableList: React.FC<{}> = () => {
   // upload props
 
   const uploadProps = {
-    name: 'test-file',
-    action: 'http://localhost:8080/api/io/upload//user/excel',
+    name: 'file',
+    action: 'http://localhost:8080/api/io/upload/url/excel',
     headers: {
       authorization: getToken(),
     },
+    showUploadList: false,
     onChange(info:any) {
       if (info.file.status !== 'uploading') {
-        console.log(info.file, info.fileList);
+        // console.log(info.file, info.fileList);
       }
       if (info.file.status === 'done') {
+        setApiData(info.file.response);
+        // @ts-ignore
+        actionRef.current?.reloadAndRest();
         message.success(`${info.file.name} file uploaded successfully`);
       } else if (info.file.status === 'error') {
         message.error(`${info.file.name} file upload failed.`);
@@ -221,41 +245,23 @@ const TableList: React.FC<{}> = () => {
 
   return (
     <PageContainer title={false}>
-      <ProTable<UserDetails>
+      {access.canAdmin&&(<Radio.Group
+        defaultValue="read"
+        buttonStyle="solid"
+        onChange={(e) => {
+          setRadioValue(e.target.value)
+          // @ts-ignore
+          actionRef.current?.reloadAndRest();
+        }}
+      >
+        <Radio.Button value="read">查询</Radio.Button>
+        <Radio.Button value="upload">上传</Radio.Button>
+      </Radio.Group>)}
+      <ProTable<ApiTableItem>
         headerTitle="查询表格"
         actionRef={actionRef}
         rowKey="key"
         search={false}
-        // search={{
-        //   collapsed: true,
-        //   optionRender: ({ searchText, resetText }, { form }) => {
-        //     return [
-        //       <a
-        //         key="searchText"
-        //         onClick={() => {
-        //           form?.submit();
-        //         }}
-        //       >
-        //         {searchText}
-        //       </a>,
-        //       <a
-        //         key="resetText"
-        //         onClick={() => {
-        //           form?.resetFields();
-        //         }}
-        //       >
-        //         {resetText}
-        //       </a>,
-        //       <a
-        //         key="out"
-        //         target="_blank"
-        //         onClick={()=>handleDownload()}
-        //       >
-        //         导出
-        //       </a>,
-        //     ];
-        //   },
-        // }}
         toolBarRender={() => [access.canAdmin &&
           (<Button type="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined /> 新建
@@ -265,16 +271,22 @@ const TableList: React.FC<{}> = () => {
               <CloudDownloadOutlined/> 下载
             </Button>
           ),
-          access.canAdmin && (
+          access.canAdmin && radioValue==='upload' &&(
             <Upload {...uploadProps}
             >
-              <Button>
+              <Button type="primary">
                 <UploadOutlined /> 上传
               </Button>
             </Upload>
           ),
         ]}
-        request={()=>findAll()}
+        // @ts-ignore
+        request={()=>{
+          if (radioValue === 'upload'){
+            return getApiData();
+          }
+          return findAllApi();
+        }}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
@@ -288,7 +300,9 @@ const TableList: React.FC<{}> = () => {
             </div>
           }
         >
-          {access.canAdmin&&(<Button
+          {access.canAdmin&& radioValue === 'read' && (<Button
+            danger
+            type="primary"
             onClick={async () => {
               await handleRemove(selectedRowsState);
               setSelectedRows([]);
@@ -298,11 +312,19 @@ const TableList: React.FC<{}> = () => {
           >
             批量删除
           </Button>)}
-          <Button type="primary">批量审批</Button>
+          {access.canAdmin && radioValue === 'upload'&&(<Button
+            type="primary"
+            onClick={async () => {
+              await handleUpdateMany(selectedRowsState);
+              setSelectedRows([]);
+            }}
+          >
+            批量新增
+          </Button>)}
         </FooterToolbar>
       )}
       <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
-        <ProTable<UserDetails, UserDetails>
+        <ProTable<ApiTableItem, ApiTableItem>
           onSubmit={async (value) => {
             const success = await handleAdd(value);
             if (success) {
@@ -342,4 +364,4 @@ const TableList: React.FC<{}> = () => {
   );
 };
 
-export default TableList;
+export default ApiTableList;

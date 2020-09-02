@@ -42,12 +42,6 @@ export default defineConfig({
       ],
     },
     {
-      path: '/welcome',
-      name: 'welcome',
-      icon: 'smile',
-      component: './Welcome',
-    },
-    {
       path: '/admin',
       name: 'admin',
       icon: 'crown',
@@ -60,15 +54,26 @@ export default defineConfig({
           icon: 'smile',
           component: './user/table',
         },
+        {
+          path: '/admin/api-page',
+          name: 'api-page',
+          icon: 'rise',
+          component: './api/table',
+        },
+        {
+          path: '/admin/upload',
+          name: 'upload',
+          icon: 'rise',
+          component: './upload',
+        },
       ],
     },
     {
-      path: '/upload',
-      name: 'upload',
+      path: '/welcome',
+      name: 'welcome',
       icon: 'smile',
-      component: './upload',
+      component: './Welcome',
     },
-
     {
       path: '/',
       redirect: '/welcome',

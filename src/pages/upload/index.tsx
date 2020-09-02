@@ -164,7 +164,7 @@ const TableList: React.FC<{}> = () => {
 
   const uploadProps = {
     name: 'file',
-    action: 'http://localhost:8080/api/io/upload/excel',
+    action: 'http://localhost:8080/api/io/upload/user/excel',
     headers: {
       authorization: getToken(),
     },

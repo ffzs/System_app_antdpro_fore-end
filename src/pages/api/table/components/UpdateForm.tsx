@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Form, Button, Input, Modal} from 'antd';
 
-import { UserDetails} from '../data.d';
+import { ApiTableItem} from '../data.d';
 import {useAccess} from "@@/plugin-access/access";
 
-export interface FormValueType extends Partial<UserDetails> {
+export interface FormValueType extends Partial<ApiTableItem> {
   target?: string;
   template?: string;
   type?: string;
@@ -16,7 +16,7 @@ export interface UpdateFormProps {
   onCancel: (flag?: boolean, formVals?: FormValueType) => void;
   onSubmit: (values: FormValueType) => void;
   updateModalVisible: boolean;
-  values: Partial<UserDetails>;
+  values: Partial<ApiTableItem>;
 }
 const FormItem = Form.Item;
 
@@ -63,16 +63,16 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
     return (
       <>
         <FormItem
-          name="email"
-          label="邮箱"
-          rules={[{ required: true, message: '请输入邮箱！' }]}
+          name="url"
+          label="api路径"
+          rules={[{ required: true, message: '请输入url！' }]}
         >
           <Input placeholder="请输入" />
         </FormItem>
         <FormItem
-          name="mobile"
-          label="手机号"
-          rules={[{ required: true, message: '请输入手机号！' }]}
+          name="name"
+          label="api描述"
+          rules={[{ required: true, message: '请输入描述！' }]}
         >
           <Input placeholder="请输入" />
         </FormItem>
@@ -85,9 +85,9 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           <Input placeholder="请输入" />
         </FormItem>)}
         {access.canAdmin&&(<FormItem
-        name="frozen"
-        label="是否禁用"
-        rules={[{ required: true, message: '输入是否禁用！' }]}
+        name="remark"
+        label="请求模式"
+        rules={[{ required: true, message: '输入请求模式！' }]}
         >
         <Input placeholder="请输入" />
         </FormItem>)}
@@ -121,11 +121,10 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         {...formLayout}
         form={form}
         initialValues={{
-          mobile: formVals.mobile,
-          frozen: formVals.frozen,
+          name: formVals.name,
+          url: formVals.url,
           roles: formVals.roles,
-          frequency: formVals.frequency,
-          email: formVals.email,
+          remark: formVals.remark,
         }}
       >
         {renderContent()}

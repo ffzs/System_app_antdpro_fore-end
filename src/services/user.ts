@@ -13,12 +13,11 @@ export async function findAll() {
   return request('http://localhost:8080/api/user/all', {
     method: 'get',
     headers:{
-      Accept: 'application/json',
       'Authorization': getToken(),
     }
   })
   .then((response) => {
-    const data = response.data.map((v:UserDetails) => {
+    const data = response.map((v:UserDetails) => {
       return {...v, key:v.id};
     });
     return {data};
@@ -83,7 +82,7 @@ export async function uploadExcel(excel:any) {
 }
 
 export async function downloadExcel(filename:string) {
-  return request('http://localhost:8080/api/io/download/excel/db', {
+  return request('http://localhost:8080/api/io/download/user/excel', {
     method: 'post',
     headers:{
       'Authorization': getToken(),
@@ -92,12 +91,12 @@ export async function downloadExcel(filename:string) {
   })
   .then(res => {
     const blob = new Blob([res], {type: "application/vnd.ms-excel"});
-    download(blob, filename);
+    downloadFile(blob, filename);
   })
 }
 
 
-export function download(blobData: Blob, forDownLoadFileName: string ): any {
+export function downloadFile(blobData: Blob, forDownLoadFileName: string ): any {
   const elink = document.createElement('a');
   elink.download = forDownLoadFileName;
   elink.style.display = 'none';
