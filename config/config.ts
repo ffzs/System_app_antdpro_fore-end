@@ -78,7 +78,7 @@ export default defineConfig({
       path: '/test',
       name: 'test',
       icon: 'smile',
-      component: './stream/tmp',
+      component: './stream',
     },
     {
       path: '/',

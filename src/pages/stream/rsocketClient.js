@@ -1,6 +1,7 @@
 import {IdentitySerializer, JsonSerializer, RSocketClient, RSocketResumableTransport} from "rsocket-core";
+import {message} from "antd";
 import RSocketWebSocketClient from "rsocket-websocket-client";
-import {v4 as uuidv4} from 'uuid';
+import {v4} from 'uuid';
 import {Weather} from "./Weather";
 
 export class Client {
@@ -20,8 +21,9 @@ export class Client {
       transport: new RSocketResumableTransport(
         () => new RSocketWebSocketClient({url: address}),
         {
-          bufferSize: 100, // max number of sent & pending frames to buffer before failing
-          resumeToken: uuidv4(), // string to uniquely identify the session across connections
+          bufferSize: 200,
+          // 这里类似token，session的东西，用于区分用户，鉴权，同一个resumeToken只能有一个获取数据
+          resumeToken: v4('ffzs'),
         })
     });
   }
@@ -32,7 +34,7 @@ export class Client {
         onComplete: s => {
           this.socket = s;
           this.socket.connectionStatus().subscribe(status => {
-            console.log(status);
+            message.info(`链接状态: ${JSON.stringify(status)}`)
           });
 
           resolve(this.socket);
@@ -47,8 +49,7 @@ export class Client {
     });
   }
 
-  requestResponse(message) {
-    const route = "chat";
+  requestResponse(message, route) {
     return new Promise((resolve, reject) => {
       this.socket.requestResponse({
         data: message,
@@ -64,10 +65,10 @@ export class Client {
     });
   }
 
-  fireAndForget(message) {
+  fireAndForget(message, route) {
     return this.socket.fireAndForget({
       data: message,
-      metadata: `${String.fromCharCode('fire-and-forget'.length)}fire-and-forget`
+      metadata: `${String.fromCharCode(route.length)}${route}`
     });
   }
 
@@ -78,11 +79,11 @@ export class Client {
     });
   }
 
-  requestChannel(flow) {
+  requestChannel(flow, route) {
     return this.socket.requestChannel(flow.map(msg => {
       return {
         data: msg,
-        metadata: `${String.fromCharCode('channel'.length)}channel`
+        metadata: `${String.fromCharCode(route.length)}${route}`
       };
     }));
   }
@@ -90,9 +91,7 @@ export class Client {
   disconnect() {
     console.log('rsocketclientsocket', this.socket);
     console.log('rsocketclient', this.client);
-    // this.socket.close();
     this.client.close();
-    // this.cancel();
   }
 
 }

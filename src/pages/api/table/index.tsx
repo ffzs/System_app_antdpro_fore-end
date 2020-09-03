@@ -132,7 +132,6 @@ const ApiTableList: React.FC<{}> = () => {
     {
       title: '地址',
       dataIndex: 'url',
-      // hideInForm: true,
       valueType: 'textarea',
     },
     {

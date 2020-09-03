@@ -1,6 +1,7 @@
 export class Weather {
 
-  constructor(temperature, direction, speed, date = Math.floor(new Date().getTime() / 1000)) {
+  constructor(id, temperature, direction, speed, date) {
+    this.id = id;
     this.temperature = temperature;
     this.direction = direction;
     this.speed = speed;
@@ -13,7 +14,8 @@ export class Weather {
   }
 
   toString() {
-    return `Message{temperature=${ this.temperature
+    return `Message{id=${ this.id
+      }, temperature=${ this.temperature
       }, direction=${ this.direction
       }, speed=${ this.speed
       }, date=${ this.date
