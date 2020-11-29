@@ -34,7 +34,7 @@ export class Client {
         onComplete: s => {
           this.socket = s;
           this.socket.connectionStatus().subscribe(status => {
-            message.info(`链接状态: ${JSON.stringify(status)}`)
+            message.info(`连接状态: ${JSON.stringify(status)}`)
           });
 
           resolve(this.socket);

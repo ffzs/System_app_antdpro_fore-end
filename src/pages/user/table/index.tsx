@@ -1,14 +1,15 @@
-import { PlusOutlined,UploadOutlined, CloudDownloadOutlined } from '@ant-design/icons';
-import { Button, message, Tag, Upload } from 'antd';
+import { PlusOutlined, CloudDownloadOutlined } from '@ant-design/icons';
+import { Button, message, Tag } from 'antd';
 import React, {useState, useRef} from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 
-import {deleteUserById, downloadExcel, findAll, getToken, saveUser, updateUser} from "@/services/user";
+import {deleteUserById, downloadExcel, findAll, saveUser, updateUser} from "@/services/user";
 import CreateForm from './components/CreateForm';
 import UpdateForm, {FormValueType} from './components/UpdateForm';
 import {UserDetails} from './data.d';
 import {useAccess} from "@@/plugin-access/access";
+
 
 /**
  * 添加节点
@@ -197,28 +198,6 @@ const TableList: React.FC<{}> = () => {
     columns.push(...updateColumns);
   }
 
-
-  // upload props
-
-  const uploadProps = {
-    name: 'test-file',
-    action: 'http://localhost:8080/api/io/upload//user/excel',
-    headers: {
-      authorization: getToken(),
-    },
-    onChange(info:any) {
-      if (info.file.status !== 'uploading') {
-        console.log(info.file, info.fileList);
-      }
-      if (info.file.status === 'done') {
-        message.success(`${info.file.name} file uploaded successfully`);
-      } else if (info.file.status === 'error') {
-        message.error(`${info.file.name} file upload failed.`);
-      }
-    },
-  };
-
-
   return (
     <PageContainer title={false}>
       <ProTable<UserDetails>
@@ -226,36 +205,6 @@ const TableList: React.FC<{}> = () => {
         actionRef={actionRef}
         rowKey="key"
         search={false}
-        // search={{
-        //   collapsed: true,
-        //   optionRender: ({ searchText, resetText }, { form }) => {
-        //     return [
-        //       <a
-        //         key="searchText"
-        //         onClick={() => {
-        //           form?.submit();
-        //         }}
-        //       >
-        //         {searchText}
-        //       </a>,
-        //       <a
-        //         key="resetText"
-        //         onClick={() => {
-        //           form?.resetFields();
-        //         }}
-        //       >
-        //         {resetText}
-        //       </a>,
-        //       <a
-        //         key="out"
-        //         target="_blank"
-        //         onClick={()=>handleDownload()}
-        //       >
-        //         导出
-        //       </a>,
-        //     ];
-        //   },
-        // }}
         toolBarRender={() => [access.canAdmin &&
         (<Button type="primary" onClick={() => handleModalVisible(true)}>
           <PlusOutlined /> 新建
@@ -264,14 +213,6 @@ const TableList: React.FC<{}> = () => {
             <Button type="primary" onClick={() => handleDownload()}>
               <CloudDownloadOutlined/> 下载
             </Button>
-          ),
-          access.canAdmin && (
-            <Upload {...uploadProps}
-            >
-              <Button>
-                <UploadOutlined /> 上传
-              </Button>
-            </Upload>
           ),
         ]}
         request={()=>findAll()}

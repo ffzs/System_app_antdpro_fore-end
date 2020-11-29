@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import {PageContainer} from "@ant-design/pro-layout";
+import {getHost} from "@/utils/utils";
 import Plot from 'react-plotly.js';
 import {Button, Col, Row, message} from "antd";
 import {Client} from './rsocketClient';
-import {Weather} from './Weather';
 
 class Tmp extends Component {
 
@@ -14,7 +14,7 @@ class Tmp extends Component {
     this.state = {
       connected: false,
       inStream: false,
-      address: 'ws://localhost:8081',
+      address: `ws://${getHost()}:8081`,
       temperature: [],
       date: []
     };

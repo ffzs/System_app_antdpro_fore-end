@@ -1,5 +1,6 @@
 import {request} from 'umi';
 import {UserDetails} from "@/pages/user/table/data";
+import {getHost} from "@/utils/utils";
 
 export async function query() {
   return request<API.CurrentUser[]>('/api/users');
@@ -10,7 +11,7 @@ export const getToken = () => {
 };
 
 export async function findAll() {
-  return request('http://localhost:8080/api/user/all', {
+  return request(`http://${getHost()}/api/user/all`, {
     method: 'get',
     headers:{
       'Authorization': getToken(),
@@ -25,7 +26,7 @@ export async function findAll() {
 }
 
 export async function findByName(username: string) {
-  return request('http://localhost:8080/api/user', {
+  return request(`http://${getHost()}/api/user`, {
     method: 'get',
     headers:{
       Accept: 'application/json',
@@ -37,7 +38,7 @@ export async function findByName(username: string) {
 
 
 export async function saveUser(user: UserDetails) {
-  return request('http://localhost:8080/api/user', {
+  return request(`http://${getHost()}/api/user`, {
     method: 'post',
     headers:{
       Accept: 'application/json',
@@ -48,7 +49,7 @@ export async function saveUser(user: UserDetails) {
 }
 
 export async function updateUser(data: UserDetails) {
-  return request('http://localhost:8080/api/user', {
+  return request(`http://${getHost()}/api/user`, {
     method: 'post',
     headers:{
       Accept: 'application/json',
@@ -59,7 +60,7 @@ export async function updateUser(data: UserDetails) {
 }
 
 export async function deleteUserById(id: number) {
-  return request('http://localhost:8080/api/user', {
+  return request(`http://${getHost()}/api/user`, {
     method: 'delete',
     headers:{
       Accept: 'application/json',
@@ -72,7 +73,7 @@ export async function deleteUserById(id: number) {
 
 
 export async function uploadExcel(excel:any) {
-  return request('http://localhost:8080/api/user', {
+  return request(`http://${getHost()}/api/user`, {
     method: 'post',
     headers:{
       'Authorization': getToken(),
@@ -82,7 +83,7 @@ export async function uploadExcel(excel:any) {
 }
 
 export async function downloadExcel(filename:string) {
-  return request('http://localhost:8080/api/io/download/user/excel', {
+  return request(`http://${getHost()}/api/io/download/user/excel`, {
     method: 'post',
     headers:{
       'Authorization': getToken(),

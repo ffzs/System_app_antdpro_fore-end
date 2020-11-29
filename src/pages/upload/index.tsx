@@ -9,6 +9,7 @@ import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
 import {UserDetails} from './data';
 import {useAccess} from "@@/plugin-access/access";
+import {getHost} from "@/utils/utils";
 
 
 const { Dragger } = Upload;
@@ -164,7 +165,7 @@ const TableList: React.FC<{}> = () => {
 
   const uploadProps = {
     name: 'file',
-    action: 'http://localhost:8080/api/io/upload/user/excel',
+    action: `http://${getHost()}/api/io/upload/user/excel`,
     headers: {
       authorization: getToken(),
     },
@@ -244,6 +245,7 @@ const TableList: React.FC<{}> = () => {
       {stepFormValues && Object.keys(stepFormValues).length ? (
         <UpdateForm
           onSubmit={async (value) => {
+            // @ts-ignore
             const success = await handleUpdate(value);
             if (success) {
               handleUpdateModalVisible(false);

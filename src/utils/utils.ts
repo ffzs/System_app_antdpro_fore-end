@@ -36,3 +36,8 @@ export const getPageQuery = () => {
 
   return {};
 };
+
+
+export const getHost = () => {
+  return 'localhost:8080' || 'localhost'
+};

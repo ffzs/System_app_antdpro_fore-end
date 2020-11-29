@@ -10,6 +10,7 @@ import {useAccess} from "@@/plugin-access/access";
 import CreateForm from './components/CreateForm';
 import UpdateForm, {FormValueType} from './components/UpdateForm';
 import {ApiTableItem} from './data.d';
+import {getHost} from "@/utils/utils";
 
 /**
  * 添加节点
@@ -221,7 +222,7 @@ const ApiTableList: React.FC<{}> = () => {
 
   const uploadProps = {
     name: 'file',
-    action: 'http://localhost:8080/api/io/upload/url/excel',
+    action: `http://${getHost()}/api/io/upload/url/excel`,
     headers: {
       authorization: getToken(),
     },
